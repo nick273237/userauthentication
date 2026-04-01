@@ -58,7 +58,7 @@ def get_choice():
         else:
             if choice == "1":
                 print("---------Welcome!----------")
-                print("---------Rules-------------\n"
+                print("-----------Rules-----------\n"
                       "Your username should be more than 8 and less than 16 characters long\n"
                       "Your username must contain at least 4 alphabetical characters\n"
                       "Your username must not contain spaces")
