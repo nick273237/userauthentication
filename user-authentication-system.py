@@ -32,7 +32,6 @@ def new_user_validation(username):
 
 
 def attempts(atts):
-
     result = 4 - atts
     if result > 1:
         print(f"{result} attempts remaining! ")
