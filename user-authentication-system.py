@@ -123,34 +123,35 @@ def get_choice():
                     k += 1
 
             elif choice == "2":
+                b = 0
                 while True:
                     username = input("What is your username?: ")
                     found_user = None
+                    found_password = None
                     with open("users.csv") as file0:
                         for line in file0:
-                            if username == user["username"]:
+                            user, password = line.rstrip().split(",")
+                            if user == username:
                                 found_user = user
-                                break
+                                found_password = password
                         if not found_user:
-                            print("We are sorry. We couldn't find your username!")
-                            cont = input("Hit enter if you want to continue or press any key to "
-                                                "get back to the menu! ")
-                            if cont == "":
-                                continue
-                            else:
-                                break
+                            if b != 4:
+                                print("Sorry, we could not find you username. Try again")
+                            attempts(b)
+                            b += 1
+                            continue
                         else:
-                            g = 0
+                            c = 0
                             while True:
-                                password = input("What is your password?: ")
-                                if password != found_user["password"]:
-                                    print("Wrong password!")
-                                    attempts(g)
-                                    g += 1
-                                    continue
+                                password = input("Please enter your password: ")
+                                if password == found_password:
+                                    print(f"Welcome {user}!")
+                                    break
                                 else:
-                                    print(f"Welcome, {username}! How are you feeling?")
-                                    sys.exit()
+                                    print("Incorrect password")
+                                    attempts(c)
+                                    c += 1
+                                    continue
 
 
             elif choice == "3":
