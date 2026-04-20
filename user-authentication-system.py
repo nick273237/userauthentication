@@ -144,7 +144,7 @@ def get_choice():
                                 password = input("Please enter your password: ")
                                 if password == found_password:
                                     print(f"Welcome {user}!")
-                                    break
+                                    sys.exit()
                                 else:
                                     print("Incorrect password")
                                     attempts(c)
