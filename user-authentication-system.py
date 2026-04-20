@@ -71,7 +71,7 @@ def get_choice():
                             with open("users.csv", newline="") as File:
                                 reader = csv.DictReader(File)
                                 for user in reader:
-                                    if user["usename"] == new_username:
+                                    if user["username"] == new_username:
                                         taken = True
                             if taken:
                                 print("Sorry, that username is already taken! Please choose another one!")
