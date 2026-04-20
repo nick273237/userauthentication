@@ -3,9 +3,6 @@ import sys
 from password_checker import check_password
 
 
-users = []
-
-
 def new_user_validation(username):
 
     if len(username) < 8 or len(username) > 16:
@@ -70,20 +67,21 @@ def get_choice():
                     elif result == "contains space":
                         print("Your username cannot contain spaces!")
                     else:
-                        taken = False
-                        for user in users:
-                            if user["username"] == new_username:
-                                taken = True
+                            taken = False
+                            with open("users.csv", newline="") as File:
+                                reader = csv.DictReader(File)
+                                for user in reader:
+                                    if user["usename"] == new_username:
+                                        taken = True
+                            if taken:
+                                print("Sorry, that username is already taken! Please choose another one!")
+                                attempts(y)
+                                y += 1
+                                new_username = input("Please choose your username!: ")
+                                continue
+                            else:
+                                print(f"Hello, {new_username}! ")
                                 break
-                        if taken:
-                            print("Sorry, that username is already taken! Please choose another one!")
-                            attempts(y)
-                            y += 1
-                            new_username = input("Please choose your username!: ")
-                            continue
-                        else:
-                            print(f"Hello, {new_username}! ")
-                            break
                     attempts(y)
                     y += 1
                     new_username = input("Please choose your username!: ")
