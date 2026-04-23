@@ -1,13 +1,6 @@
+import csv
 import sys
 from password_checker import check_password
-
-
-users = [
-    {"username": "bobStookey", "password": "NiNa__gg11"},
-    {"username": "JakeGylly", "password": "EWt_in1@"}
-
-
-]
 
 
 def new_user_validation(username):
@@ -15,8 +8,8 @@ def new_user_validation(username):
     if len(username) < 8 or len(username) > 16:
         return "invalid length"
     letter_count = 0
-    for j in range(len(username)):
-        if username[j].isalpha():
+    for j in username:
+        if j.isalpha():
             letter_count += 1
         else:
             pass
@@ -32,7 +25,6 @@ def new_user_validation(username):
 
 
 def attempts(atts):
-
     result = 4 - atts
     if result > 1:
         print(f"{result} attempts remaining! ")
@@ -59,7 +51,7 @@ def get_choice():
         else:
             if choice == "1":
                 print("---------Welcome!----------")
-                print("---------Rules-------------\n"
+                print("-----------Rules-----------\n"
                       "Your username should be more than 8 and less than 16 characters long\n"
                       "Your username must contain at least 4 alphabetical characters\n"
                       "Your username must not contain spaces")
@@ -75,20 +67,21 @@ def get_choice():
                     elif result == "contains space":
                         print("Your username cannot contain spaces!")
                     else:
-                        taken = False
-                        for user in users:
-                            if user["username"] == new_username:
-                                taken = True
+                            taken = False
+                            with open("users.csv", newline="") as File:
+                                reader = csv.DictReader(File)
+                                for user in reader:
+                                    if user["username"] == new_username:
+                                        taken = True
+                            if taken:
+                                print("Sorry, that username is already taken! Please choose another one!")
+                                attempts(y)
+                                y += 1
+                                new_username = input("Please choose your username!: ")
+                                continue
+                            else:
+                                print(f"Hello, {new_username}! ")
                                 break
-                        if taken:
-                            print("Sorry, that username is already taken! Please choose another one!")
-                            attempts(y)
-                            y += 1
-                            new_username = input("Please choose your username!: ")
-                            continue
-                        else:
-                            print(f"Hello, {new_username}! ")
-                            break
                     attempts(y)
                     y += 1
                     new_username = input("Please choose your username!: ")
@@ -118,43 +111,45 @@ def get_choice():
                         print("Your password must contain a digit!")
                     else:
                         print(f"Great! Your password is: {new_password}")
-                        users.append({
-                            "username": new_username,
-                            "password": new_password
-                            })
+                        with open("users.csv", "a", newline="") as file:
+                            fieldnames = ["username", "password"]
+                            writer = csv.DictWriter(file, fieldnames=fieldnames)
+                            writer.writerow({"username": new_username, "password": new_password})
                         break
 
                     attempts(k)
                     k += 1
 
             elif choice == "2":
+                b = 0
                 while True:
                     username = input("What is your username?: ")
                     found_user = None
-                    for user in users:
-                        if username == user["username"]:
-                            found_user = user
-                            break
-                    if not found_user:
-                        print("We are sorry. We couldn't find your username!")
-                        cont = input("Hit enter if you want to continue or press any key to "
-                                            "get back to the menu! ")
-                        if cont == "":
+                    found_password = None
+                    with open("users.csv") as file0:
+                        for line in file0:
+                            user, password = line.rstrip().split(",")
+                            if user == username:
+                                found_user = user
+                                found_password = password
+                        if not found_user:
+                            if b != 4:
+                                print("Sorry, we could not find you username. Try again")
+                            attempts(b)
+                            b += 1
                             continue
                         else:
-                            break
-                    else:
-                        g = 0
-                        while True:
-                            password = input("What is your password?: ")
-                            if password != found_user["password"]:
-                                print("Wrong password!")
-                                attempts(g)
-                                g += 1
-                                continue
-                            else:
-                                print(f"Welcome, {username}! How are you feeling?")
-                                sys.exit()
+                            c = 0
+                            while True:
+                                password = input("Please enter your password: ")
+                                if password == found_password:
+                                    print(f"Welcome {user}!")
+                                    sys.exit()
+                                else:
+                                    print("Incorrect password")
+                                    attempts(c)
+                                    c += 1
+                                    continue
 
 
             elif choice == "3":
