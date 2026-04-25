@@ -1,6 +1,46 @@
 import csv
 import sys
-from password_checker import check_password
+
+
+def check_password(password):
+    if len(password.strip()) < 8:
+        return "too short"
+    has_upper = False
+    has_digit = False
+    has_lower = False
+    has_symbol = False
+    is_repetitive = False
+    has_space = False
+    for i in password:
+        if not i.isdigit() and not i.isalpha() and not i.isspace():
+            has_symbol = True
+        if i.isupper():
+            has_upper = True
+        if i.isspace():
+            has_space = True
+        if i.isdigit():
+            has_digit = True
+        if i.islower():
+            has_lower = True
+
+    for j in range(len(password) - 2):
+        if password[j] == password[j + 1] == password[j + 2]:
+            is_repetitive = True
+
+
+    if has_space:
+        return "contains space"
+    if is_repetitive:
+        return "too repetitive"
+    if not has_upper:
+        return "no uppercase"
+    if not has_digit:
+        return "no digit"
+    if not has_lower:
+        return "no lowercase"
+    if not has_symbol:
+        return "no symbol"
+    return "valid"
 
 
 def new_user_validation(username):
@@ -92,30 +132,34 @@ def get_choice():
                       "Your password must contain a lowercase letter\n"
                       "Your password must contain digits\n"
                       "Your password must not be too repetitive\n"
-                      "Your password must contain a symbol(#, $, @, !, etc...)")
+                      "Your password must contain a symbol(#, $, @, !, etc...)\n"
+                      "Your password must not contain spaces")
                 k = 0
                 while True:
                     new_password = input(f"Choose a password for {new_username}: ")
                     result = check_password(new_password)
-                    if result == "too short":
-                        print("Your password is too short")
-                    elif result == "too repetitive":
-                        print("Your password is too repetitive!")
-                    elif result == "no symbol":
-                        print("Your password must contain symbols! (#, $, @, !, etc...)")
-                    elif result == "no lowercase":
-                        print("Your password must contain a lowercase letter!")
-                    elif result == "no uppercase":
-                        print("Your password must contain an uppercase letter!")
-                    elif result == "no digit":
-                        print("Your password must contain a digit!")
-                    else:
-                        print(f"Great! Your password is: {new_password}")
-                        with open("users.csv", "a", newline="") as file:
-                            fieldnames = ["username", "password"]
-                            writer = csv.DictWriter(file, fieldnames=fieldnames)
-                            writer.writerow({"username": new_username, "password": new_password})
-                        break
+                    match result:
+                        case "contains space":
+                            print("Your username cannot contain a space")
+                        case "too short":
+                            print("Your password is too short!")
+                        case "too repetitive":
+                            print("Your password is too repetitive!")
+                        case "no uppercase":
+                            print("Your password must contain an uppercase character")
+                        case "no digit":
+                            print("Your password must contain a digit!")
+                        case "no lowercase":
+                            print("Your password must contain a lowercase character")
+                        case "no symbol":
+                            print("Your password must contain a symbol!(#, @, $, %, ...)")
+                        case "valid":
+                            print(f"Great! Your password is: {new_password}")
+                            with open("users.csv", "a", newline="") as file:
+                                fieldnames = ["username", "password"]
+                                writer = csv.DictWriter(file, fieldnames=fieldnames)
+                                writer.writerow({"username": new_username, "password": new_password})
+                            break
 
                     attempts(k)
                     k += 1
@@ -153,7 +197,8 @@ def get_choice():
 
 
             elif choice == "3":
-                print("It was nice assisting you! Goodbye! ")
+                print("It was nice assisting you. Goodbye!")
                 sys.exit()
 if __name__ == "__main__":
     get_choice()
+
